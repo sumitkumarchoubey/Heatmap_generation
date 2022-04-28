@@ -1,0 +1,77 @@
+
+<html>
+<head>
+<title>Python Flask Upload and display image</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />        
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+.row {
+  display: flex;
+}
+
+/* Create three equal columns that sits next to each other */
+.column {
+  flex: 33.33%;
+  padding: 5px;
+}
+</style>
+</head>
+<body>
+<p><h1 align="center">Python Flask Upload and display image</h1></p>
+<div class="container">
+<div class="row">
+    <h2>Select a file to upload</h2>
+</div>
+    <div class="row">
+    <p>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+    </p>
+    </div>
+  
+
+            
+        
+  <div class="row">  
+    <form method="post" action="/" enctype="multipart/form-data">
+        <dl>
+            <p>
+                <input type="file" name="file" class="form-control" autocomplete="off" required>
+            </p>
+        </dl>
+        <p>
+            <input type="submit" value="Submit" class="btn btn-info">
+        </p>
+    </form>
+  </div>
+
+{% if filename %}
+<h2 align="center">Please Wait Processing of HeatMap Generation Going</h2>
+<div class="row">
+   <div class="column">
+   <p>Orginal Image </p>
+    <img src="{{ url_for('static', filename='upload_image/'+filename) }}">
+    </div>
+    <div class="column">
+      <p>Heatmap image</p>
+    <img src="{{ url_for('display_image', filename=filename) }}">
+    </div>
+  </div>  
+    
+</div>   
+
+    {% endif %}
+</body>
+</html>

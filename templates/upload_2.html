@@ -1,0 +1,136 @@
+
+<html>
+  <head>
+  <title>Python Flask Upload and display image</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />        
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script type="text/javascript">
+    function loading(){
+        $("#loading").show();
+        $("#content").hide();       
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  * {
+    box-sizing: border-box;
+    background-color: '#F8F5FF';
+  }
+  /* Create three equal columns that sits next to each other */
+  .column {
+    flex: 33.33%;
+    padding: 5px;
+  }
+  
+  .loading {
+      width: 35px;
+      height: 35px;
+      display: none;
+      background: url(/static/Curve-Loading.gif) no-repeat;
+      cursor: wait;
+      }
+     
+    .form-control{
+      width: 250px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #d1bff1;
+    }  
+  
+  .row{
+    display: flex;
+  }
+   
+   .img1{
+     position: absolute;
+     top: 310;
+     left: 300;
+     width: 450px;
+     height: 450px;
+   }
+  
+   .img2{
+    position: absolute;
+     top: 310;
+     right: 300;
+     width: 450px;
+     height: 450px;
+   }
+  
+  .text{
+    position: absolute;
+     top: 270;
+     right: 590;
+  
+  }
+
+  .bottomright {
+    position: absolute;
+    bottom: 8px;
+    right: 16px;
+    font-size: 18px;
+  }
+  
+  </style>
+  </head>
+  <body style="box-sizing: border-box; background-color: #d1bff1;">
+  
+  
+  
+  <div class="container">
+  <div  class="row">
+      <h2 align="center">Select a file to upload</h2>
+  </div>
+      <div class="row">
+      <p>
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <ul>
+              {% for message in messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          {% endwith %}
+      </p>
+      </div>
+    
+  
+              
+          
+    <div  class="row", id="loading">  
+      <form align="center" method="post" action="/" enctype="multipart/form-data">
+          <dl>
+              <p>
+                  <input type="file" name="file" class="form-control" autocomplete="off" required>
+              </p>
+          </dl>
+          <p>
+              <input type="submit" value="Submit" class="btn btn-info" onclick="loading()">
+          </p>
+      </form>
+    </div>
+  
+  {% if filename %}
+  <h1 align="center"> It will take some time to generate heatmap, please wait! </h1>
+  <div class="img-div">
+     <p> Original Image </p>
+      <img class="img1" src="{{ url_for('static', filename='upload_image/'+filename) }}">
+      <p class="text"> Heatmap Generated Image </p>
+      
+
+
+       <a  href="{{ url_for('download_file',filename=filename)}}">
+        <img class="img2" src="{{ url_for('display_image', filename=filename) }}">
+
+        </a>
+       
+      
+  </div>  
+  </div>   
+  
+      {% endif %}
+  </body>
+  </html>    
+    
