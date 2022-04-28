@@ -1,5 +1,5 @@
 # ignore all logs
 *.log
 __pycache__/
-*.png
+
 *.jpg
