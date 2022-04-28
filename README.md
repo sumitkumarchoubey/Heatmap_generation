@@ -1,7 +1,7 @@
 # In The Heatmap Generator from image Project we can run this project using Two options.
 ## First download Image classification pretrained model from this link :
-    https://drive.google.com/drive/folders/1AA_csTxheVSxp5HrHyt9UooZFE-Q6UpQ?usp=sharing
-Then save the model folder inside this current directory.
+    https://drive.google.com/file/d/1wNAX0dayz7Eogg8hzTb3i4ZfqXUMmWa4/view?usp=sharing
+Then unzip it  save the model folder inside this current directory.
 ## Run Using start.sh
     we can run this project using the command sh start.sh
     In this start.sh file it first install dependencies using the command 
