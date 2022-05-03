@@ -35,7 +35,7 @@ start_time = time.time()
 reconstructed_model = keras.models.load_model("model",compile=False)
 load_model=LoadModel(model_name=reconstructed_model)
 create_model=load_model.create()
-print("load model --- %s seconds ---" % (time.time() - start_time))
+
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -68,7 +68,6 @@ def upload_image():
 
 @app.route('/display/<filename>')
 def display_image(filename):
-	print('display_image filename: ' + filename)
 	start_time = time.time()
 	file_location=config['foldername']['upload_image']+filename
 	preprocess_file_location=config['foldername']['preprocess_output']+filename.split(".")[0]+".png"
@@ -76,42 +75,28 @@ def display_image(filename):
 	start_time = time.time()
 	image_file=ImagePreProcessing(config['foldername']['upload_image'],config['foldername']['preprocess_output'])
 	save_preprocess_image=image_file.run_file(filename)
-	print("preprocessing --- %s seconds ---" % (time.time() - start_time))
-
+	logging.info("load model successfully created")
 	logging.info('preprocessing done  ' + filename)
-
-
 	logging.info('process start ' + filename)
 	extract_file_name=file_location.split("/")[-1]
 	save_filename=config['foldername']['save_prediction_folder']+extract_file_name
-	## load model from
-	"""start_time = time.time()
-	reconstructed_model = keras.models.load_model("model",compile=False)
-	load_model=LoadModel(model_name=reconstructed_model)
-	create_model=load_model.create()
-	print("load model --- %s seconds ---" % (time.time() - start_time))"""
-
-	logging.info("load model successfully created")
 	start_time = time.time()
-
 	preprocessing_image=PreprocessImage(image_path=preprocess_file_location,target_size=(299,299),preprocee_input=tf.keras.applications.inception_resnet_v2.preprocess_input)
 	preprocess_image_output=preprocessing_image.preprocess()
-	print("preprocess_image_model --- %s seconds ---" % (time.time() - start_time))
+	
 
 	logging.info("image preprocessing done")
 	start_time = time.time()
-
 	heat_map_create=HeatmapGenerator(image_preprocess_output=preprocess_image_output,model=create_model,last_layer_name=config['model']['last_layer_name'])
-	#make_heat_map=heat_map_create.make_gradcam_heatmap()
-	make_heat_map=heat_map_create.ScoreCam(create_model,preprocess_image_output,config['model']['last_layer_name'],max_N=10)
-	
+	make_heat_map_grad_cam=heat_map_create.make_gradcam_heatmap()
+	make_heat_map=heat_map_create.make_heatmap_using_scorecam(create_model,preprocess_image_output,config['model']['last_layer_name'],max_N=8)
+	## merge two heatmap
+	merge_heatmap=(make_heat_map+make_heat_map_grad_cam)
 	logging.info("heatmap array created")
-	save_heatmap_output=SaveGradCam(image_path=file_location,heatmap=make_heat_map,save_file_location=config['foldername']['save_file_location'],alpha_value=int(config['model']['alpha_value']))
+	save_heatmap_output=SaveGradCam(image_path=file_location,heatmap=merge_heatmap,save_file_location=config['foldername']['save_file_location'],alpha_value=int(config['model']['alpha_value']))
 	save_heatmap_data=save_heatmap_output.save_gradcam(file_name=extract_file_name)
-	print("heatmap Generation and model save --- %s seconds ---" % (time.time() - start_time))
-
 	logging.info("final output saved"+config['foldername']['save_prediction_folder']+extract_file_name)
-	print("heatmap Generation and model save --- %s seconds ---" % (time.time() - start_time))
+	
 	## save watermark on image
 	image = Image.open("static/Heatmap_result/"+filename)
 	logo = Image.open('static/image.png')

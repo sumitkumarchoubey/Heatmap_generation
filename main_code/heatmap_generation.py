@@ -15,7 +15,7 @@ class HeatmapGenerator:
         f = np.exp(x)/np.sum(np.exp(x), axis = 1, keepdims = True)
         return f
 
-    def ScoreCam(self,model, img_array, layer_name, max_N=-1):
+    def make_heatmap_using_scorecam(self,model, img_array, layer_name, max_N=-1):
 
         cls = np.argmax(model.predict(img_array))
         act_map_array = tf.keras.models.Model(inputs=model.input, outputs=model.get_layer(layer_name).output).predict(img_array)
@@ -109,7 +109,7 @@ class SaveGradCam:
         img = tf.keras.preprocessing.image.img_to_array(img)
 
         # Rescale heatmap to a range 0-255
-        heatmap = np.uint8(255 * self.heatmap)
+        heatmap = np.uint8(224 * self.heatmap)
         
         # Use jet colormap to colorize heatmap
         jet = cm.get_cmap("jet")

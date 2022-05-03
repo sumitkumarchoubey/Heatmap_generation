@@ -45,12 +45,12 @@ class ImagePreProcessing:
         im_output.save(self.file_save+file_name)
         return file_name
     def binarization_thresholding(self,file_name):
-        img=cv2.imread(self.folder_name+file_name,0)
+        img=cv2.imread(self.file_save+file_name,0)
         blur = cv2.GaussianBlur(img,(5,5),0)
         #bilFilter = cv2.bilateralFilter(img,9,75,75)
 
         try:
-            ret,thresh4 = cv2.threshold(blur,150,255,cv2.THRESH_TOZERO)
+            ret,thresh4 = cv2.threshold(blur,160,255,cv2.THRESH_TOZERO)
          
             time.sleep(1)
             file_name=file_name.split(".")[0]+".png"
@@ -63,21 +63,15 @@ class ImagePreProcessing:
 
         
     def run_file(self,file_name):
-        """print("data",file_name)
-        fixed_height=1600
-        print(self.folder_name+file_name)
-        image = Image.open(self.folder_name+file_name)
-        height_percent = (fixed_height / float(image.size[1]))
-        width_size = int((float(image.size[0]) * float(height_percent)))
-        image = image.resize((width_size, fixed_height), PIL.Image.NEAREST)
-        split_d=file_name.split(".")[0]
-        file_da=split_d+".png"
-        image.save(self.file_save+file_da)
-        print(file_da)"""
+       
+        file_name_update =file_name.split(".")[0]+".png"
+        im = Image.open(self.folder_name+file_name)
+        im.save(self.file_save+file_name_update)
+
         try:
-            """resize_image_name=self.resize(file_da)
-            enhance_image=self.enhance_image(resize_image_name)"""
-            binarization_thresholding_image=self.binarization_thresholding(file_name)
+            resize_image_name=self.resize(file_name_update)
+            enhance_image=self.enhance_image(resize_image_name)
+            binarization_thresholding_image=self.binarization_thresholding(enhance_image)
             
 
             return file_name
