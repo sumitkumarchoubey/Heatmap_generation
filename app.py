@@ -97,9 +97,16 @@ def display_image(filename):
 	save_heatmap_data=save_heatmap_output.save_gradcam(file_name=extract_file_name)
 	logging.info("final output saved"+config['foldername']['save_prediction_folder']+extract_file_name)
 	
+	##fixed the size of each output image so that the watermark add proper size
+	basewidth = 1600
+	img = Image.open("static/Heatmap_result/"+filename)
+	wpercent = (basewidth/float(img.size[0]))
+	hsize = int((float(img.size[1])*float(wpercent)))
+	img = img.resize((basewidth,hsize), Image.ANTIALIAS)
+	img.save("static/Heatmap_result/"+filename)
 	## save watermark on image
 	image = Image.open("static/Heatmap_result/"+filename)
-	logo = Image.open('static/image.png')
+	logo = Image.open('static/logo.png')
 	image_copy = image.copy()
 	position = ((image_copy.width - logo.width), (image_copy.height - logo.height))
 	image_copy.paste(logo, position,logo)
